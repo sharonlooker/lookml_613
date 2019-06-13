@@ -12,6 +12,18 @@ view: users {
     sql: ${TABLE}.age ;;
   }
 
+  dimension: age_tier {
+    type: tier
+    sql: ${age} ;;
+    tiers: [0,18,25,34,54]
+    style: integer
+  }
+
+  dimension: is_over_age_18 {
+    type: yesno
+    sql: ${age} > 18 ;;
+  }
+
   dimension: city {
     type: string
     sql: ${TABLE}.city ;;
@@ -47,14 +59,19 @@ view: users {
     sql: ${TABLE}.first_name ;;
   }
 
-  dimension: gender {
-    type: string
-    sql: ${TABLE}.gender ;;
-  }
-
   dimension: last_name {
     type: string
     sql: ${TABLE}.last_name ;;
+  }
+
+  dimension: full_name {
+    type: string
+    sql: ${first_name} || ' ' || ${last_name} ;;
+  }
+
+  dimension: gender {
+    type: string
+    sql: ${TABLE}.gender ;;
   }
 
   dimension: latitude {
@@ -72,6 +89,14 @@ view: users {
     sql: ${TABLE}.state ;;
   }
 
+#   dimension: region {
+#     type: string
+#     sql: CASE WHEN ${state} in ('California', 'Oregon', 'Washington') THEN 'West'
+#             WHEN ${state} in..... THEN 'South'
+#             ELSE 'Other'
+#             END ;;
+#   }
+
   dimension: traffic_source {
     type: string
     sql: ${TABLE}.traffic_source ;;
@@ -82,10 +107,19 @@ view: users {
     sql: ${TABLE}.zip ;;
   }
 
-  measure: count {
+  measure: count_users {
+    label: "# of Users"
     type: count
     drill_fields: [detail*]
   }
+
+  measure: average_age {
+    type: average
+    sql: ${age} ;;
+  }
+
+
+
 
   # ----- Sets of fields for drilling ------
   set: detail {

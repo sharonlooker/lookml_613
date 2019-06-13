@@ -7,6 +7,12 @@ view: order_items {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: primary_key {
+    hidden: yes
+    type: string
+    sql: ${id}|| ${order_id} ;;
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
@@ -19,6 +25,12 @@ view: order_items {
       year
     ]
     sql: ${TABLE}.created_at ;;
+  }
+
+  dimension: days_as_user {
+    description: "Days as user at the time of order creation"
+    type: number
+    sql: DATEDIFF('day',${users.created_date},${created_date}) ;;
   }
 
   dimension_group: delivered {
